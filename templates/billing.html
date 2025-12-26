@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing - Suhan AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+    <div class="billing-container">
+        <h1>Billing</h1>
+        <div class="plans">
+            <div class="plan free">
+                <h2>Free</h2>
+                <p>$0/month</p>
+                <ul>
+                    <li>10 messages/day</li>
+                    <li>No long-term memory</li>
+                </ul>
+            </div>
+            <div class="plan pro">
+                <h2>Pro</h2>
+                <p>$9.99/month</p>
+                <ul>
+                    <li>Unlimited messages</li>
+                    <li>Long-term memory</li>
+                </ul>
+                <button id="checkout-btn">Subscribe</button>
+            </div>
+        </div>
+        <a href="{{ url_for('chat') }}">Back to Chat</a>
+    </div>
+    <script>
+        const stripe = Stripe('{{ stripe_key }}');
+        document.getElementById('checkout-btn').addEventListener('click', async () => {
+            const response = await fetch('/create-checkout-session', { method: 'POST' });
+            const session = await response.json();
+            if (session.id) {
+                stripe.redirectToCheckout({ sessionId: session.id });
+            } else {
+                alert(session.error);
+            }
+        });
+    </script>
+</body>
+</html>

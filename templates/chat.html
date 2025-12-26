@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - Suhan AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>Suhan AI</h2>
+            <button id="new-chat">New Chat</button>
+        </div>
+        <div class="conversations">
+            {% for conv in conversations %}
+            <a href="{{ url_for('chat', conv_id=conv['id']) }}" class="conv-link {% if conv['id'] == current_conv|int %}active{% endif %}">{{ conv['title'] or 'Untitled' }}</a>
+            {% endfor %}
+        </div>
+        <div class="sidebar-footer">
+            <div class="user-info">{{ session.username }} ({{ plan }})</div>
+            <a href="{{ url_for('billing') }}">Billing</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+    <div class="chat-container">
+        <div class="chat-messages" id="messages">
+            {% for msg in messages %}
+            <div class="message {{ 'user' if msg['role'] == 'user' else 'ai' }}">{{ msg['content'] }}</div>
+            {% endfor %}
+        </div>
+        <div class="input-container">
+            <form id="chat-form">
+                <input type="text" id="message-input" name="message" placeholder="Message Suhan AI…" required>
+                <button type="button" id="mic-btn">🎤</button>
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='chat.js') }}"></script>
+</body>
+</html>
